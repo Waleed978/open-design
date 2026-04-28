@@ -125,3 +125,13 @@ export async function detectAgents() {
 export function getAgentDef(id) {
   return AGENT_DEFS.find((a) => a.id === id) || null;
 }
+
+// Resolve the absolute path of an agent's binary on the current PATH.
+// Used by the chat handler so spawn() gets the same executable that
+// detection reported as available — fixes Windows ENOENT when the bare
+// bin name isn't on the child process's PATH (issue #10).
+export function resolveAgentBin(id) {
+  const def = getAgentDef(id);
+  if (!def?.bin) return null;
+  return resolveOnPath(def.bin);
+}

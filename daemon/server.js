@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs';
 import os from 'node:os';
-import { detectAgents, getAgentDef } from './agents.js';
+import { detectAgents, getAgentDef, resolveAgentBin } from './agents.js';
 import { listSkills } from './skills.js';
 import { listDesignSystems, readDesignSystem } from './design-systems.js';
 import { createClaudeStreamHandler } from './claude-stream.js';
@@ -792,9 +792,20 @@ export async function startServer({ port = 7456 } = {}) {
       res.write(`data: ${JSON.stringify(data)}\n\n`);
     };
 
+    // Resolve the agent's bin to its absolute path. Detection (`/api/agents`)
+    // already locates the executable via PATH, but spawning the bare name here
+    // fails on Windows (ENOENT) when the child process's PATH doesn't contain
+    // the user's npm-global / shim directory — see issue #10.
+    const resolvedBin = resolveAgentBin(agentId) || def.bin;
+    // npm shims on Windows are .cmd/.bat files; Node ≥21 refuses to spawn
+    // those without `shell: true` (CVE-2024-27980). When `shell: true` is set
+    // on Windows, Node escapes args automatically for the cmd.exe shell.
+    const useShell =
+      process.platform === 'win32' && /\.(cmd|bat)$/i.test(resolvedBin);
+
     send('start', {
       agentId,
-      bin: def.bin,
+      bin: resolvedBin,
       streamFormat: def.streamFormat ?? 'plain',
       projectId: typeof projectId === 'string' ? projectId : null,
       cwd,
@@ -802,10 +813,11 @@ export async function startServer({ port = 7456 } = {}) {
 
     let child;
     try {
-      child = spawn(def.bin, args, {
+      child = spawn(resolvedBin, args, {
         env: { ...process.env },
         stdio: ['ignore', 'pipe', 'pipe'],
         cwd: cwd || undefined,
+        shell: useShell,
       });
     } catch (err) {
       send('error', { message: `spawn failed: ${err.message}` });
