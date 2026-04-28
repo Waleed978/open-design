@@ -38,7 +38,7 @@ interface Props {
 const SIDEBAR_MIN = 320;
 const SIDEBAR_MAX = 560;
 const SIDEBAR_DEFAULT = 380;
-const SIDEBAR_STORAGE_KEY = 'ocd-entry-sidebar-width';
+const SIDEBAR_STORAGE_KEY = 'od-entry-sidebar-width';
 
 function loadSidebarWidth(): number {
   try {

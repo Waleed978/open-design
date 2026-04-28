@@ -74,8 +74,8 @@ Every external project this spec leans on. Three questions per entry: what is it
 - **Related URLs:** claude.ai/design, getdesign.md, Discord community
 - **Why it matters:** Defines the de-facto portable design-system format for AI agents.
 - **What we borrow:**
-  - **The entire `DESIGN.md` format, unchanged.** We adopt their 9-section schema as OCD's canonical design-system format.
-  - Ecosystem compatibility: any of their 68 DESIGN.md files works as an OCD active design system out of the box.
+  - **The entire `DESIGN.md` format, unchanged.** We adopt their 9-section schema as OD's canonical design-system format.
+  - Ecosystem compatibility: any of their 68 DESIGN.md files works as an OD active design system out of the box.
 - **What we don't:**
   - Their curated list itself — we don't fork their 68 files; we reference upstream.
   - Their Discord / community layer — not our product.
@@ -87,10 +87,10 @@ Every external project this spec leans on. Three questions per entry: what is it
 - **What it is:** A Claude Code skill producing magazine-style, horizontal-swipe web decks. Structure: `SKILL.md` + `assets/template.html` + `references/{components,layouts,themes,checklist}.md`. 6-step workflow. Single-file HTML output with embedded CSS/WebGL. Keyboard/scroll/touch navigation.
 - **Why it matters:** Reference implementation of a high-quality Claude skill, and our default deck skill.
 - **What we borrow:**
-  - **The whole skill, unmodified.** It's our default v1 `deck-skill`. A user runs `ocd skill add https://github.com/op7418/guizang-ppt-skill` and it works.
+  - **The whole skill, unmodified.** It's our default v1 `deck-skill`. A user runs `od skill add https://github.com/op7418/guizang-ppt-skill` and it works.
   - Skill directory convention (`assets/` + `references/` + `SKILL.md`) as the pattern we document for skill authors.
   - The "6-step workflow + quality-checklist rubric" pattern for authoring new skills.
-- **What we don't:** Nothing — this is pure reuse. We add an `ocd:` block to its front-matter only if we want to expose theme sliders; the skill works without it.
+- **What we don't:** Nothing — this is pure reuse. We add an `od:` block to its front-matter only if we want to expose theme sliders; the skill works without it.
 
 ---
 
@@ -111,7 +111,7 @@ Every external project this spec leans on. Three questions per entry: what is it
 
 ## Compatibility & differentiation matrix
 
-| Dimension | [Claude Design][cd] | [Open CoDesign][ocod] | [multica][multica] | [cc-switch][ccsw] | **OCD** |
+| Dimension | [Claude Design][cd] | [Open CoDesign][ocod] | [multica][multica] | [cc-switch][ccsw] | **OD** |
 |---|---|---|---|---|---|
 | Open source | ❌ | ✅ | ✅ | ✅ | ✅ |
 | Primary form factor | Web (hosted) | Electron | Web + Go daemon | Tauri | **Next.js web + Node daemon** |
@@ -125,7 +125,7 @@ Every external project this spec leans on. Three questions per entry: what is it
 | Template gallery | ✅ | ✅ (15) | ❌ | ❌ | **✅** |
 | Design-system authoring mode | ❌ | ❌ | ❌ | ❌ | **✅** |
 
-The two empty-column crossings where OCD lights up and others don't: **Vercel-deployable + design-system authoring**, and **uses existing code agent + first-class DESIGN.md**. That's the niche.
+The two empty-column crossings where OD lights up and others don't: **Vercel-deployable + design-system authoring**, and **uses existing code agent + first-class DESIGN.md**. That's the niche.
 
 ---
 

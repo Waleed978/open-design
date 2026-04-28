@@ -86,7 +86,7 @@ export interface SkillSummary {
   upstream: string | null;
   /** Lower number = higher priority in the Examples gallery. `null` keeps
    *  the skill in its natural alphabetical position below all featured
-   *  entries. Set via `ocd.featured` in the SKILL.md frontmatter. */
+   *  entries. Set via `od.featured` in the SKILL.md frontmatter. */
   featured?: number | null;
   hasBody: boolean;
   examplePrompt: string;

@@ -9,9 +9,9 @@
  * When `options.deck` is set we also inject a `postMessage` listener that
  * lets the host advance / rewind slides without relying on the iframe
  * having keyboard focus. The host posts:
- *   { type: 'ocd:slide', action: 'next' | 'prev' | 'first' | 'last' | 'go', index?: number }
+ *   { type: 'od:slide', action: 'next' | 'prev' | 'first' | 'last' | 'go', index?: number }
  * and the iframe responds with:
- *   { type: 'ocd:slide-state', active: number, count: number }
+ *   { type: 'od:slide-state', active: number, count: number }
  * after every navigation so the host can render its own counter / dots.
  */
 export function buildSrcdoc(
@@ -55,7 +55,7 @@ function injectDeckBridge(doc: string): string {
     try {
       var list = slides();
       window.parent.postMessage({
-        type: 'ocd:slide-state',
+        type: 'od:slide-state',
         active: activeIndex(),
         count: list.length,
       }, '*');
@@ -63,7 +63,7 @@ function injectDeckBridge(doc: string): string {
   }
   window.addEventListener('message', function(ev){
     var data = ev && ev.data;
-    if (!data || data.type !== 'ocd:slide') return;
+    if (!data || data.type !== 'od:slide') return;
     var list = slides();
     var i = activeIndex();
     if (data.action === 'next') go(i + 1);

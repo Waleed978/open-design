@@ -155,7 +155,7 @@ function HtmlViewer({
       const data = ev?.data as
         | { type?: string; active?: number; count?: number }
         | null;
-      if (!data || data.type !== 'ocd:slide-state') return;
+      if (!data || data.type !== 'od:slide-state') return;
       if (typeof data.active !== 'number' || typeof data.count !== 'number') return;
       setSlideState({ active: data.active, count: data.count });
     }
@@ -166,7 +166,7 @@ function HtmlViewer({
   function postSlide(action: 'next' | 'prev' | 'first' | 'last') {
     const win = iframeRef.current?.contentWindow;
     if (!win) return;
-    win.postMessage({ type: 'ocd:slide', action }, '*');
+    win.postMessage({ type: 'od:slide', action }, '*');
   }
 
   // Keyboard nav on the host, so the user can press ←/→ even when focus
