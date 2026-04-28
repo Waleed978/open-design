@@ -38,6 +38,13 @@ export async function listSkills(skillsRoot) {
         defaultFor: normalizeDefaultFor(data.od?.default_for),
         upstream: typeof data.od?.upstream === 'string' ? data.od.upstream : null,
         featured: normalizeFeatured(data.od?.featured),
+        // Optional metadata hints used by 'Use this prompt' fast-create so
+        // the resulting project mirrors the shipped example.html. Each hint
+        // is only consumed when its kind matches the skill mode; missing
+        // hints fall back to the same defaults the new-project form uses.
+        fidelity: normalizeFidelity(data.od?.fidelity),
+        speakerNotes: normalizeBoolHint(data.od?.speaker_notes),
+        animations: normalizeBoolHint(data.od?.animations),
         examplePrompt: derivePrompt(data),
         body: hasAttachments ? withSkillRootPreamble(body, dir) : body,
         dir,
@@ -83,6 +90,27 @@ function normalizeDefaultFor(value) {
   if (!value) return [];
   if (Array.isArray(value)) return value.map(String);
   return [String(value)];
+}
+
+// Optional `od.fidelity` hint for prototype skills. Only 'wireframe' and
+// 'high-fidelity' are meaningful — anything else collapses to null so the
+// caller falls back to the form default ('high-fidelity').
+function normalizeFidelity(value) {
+  if (value === 'wireframe' || value === 'high-fidelity') return value;
+  return null;
+}
+
+// Coerce truthy / falsy strings ("true", "yes", "false", "no") and booleans
+// to a real boolean. Returns null for anything we can't interpret so the
+// caller knows to fall back to the form default.
+function normalizeBoolHint(value) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const v = value.trim().toLowerCase();
+    if (v === 'true' || v === 'yes' || v === '1') return true;
+    if (v === 'false' || v === 'no' || v === '0') return false;
+  }
+  return null;
 }
 
 // Coerce `od.featured` into a numeric priority. Lower numbers float to the
