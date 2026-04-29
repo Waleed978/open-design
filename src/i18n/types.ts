@@ -93,6 +93,12 @@ export interface Dict {
   'settings.noAgentSelected': string;
   'settings.language': string;
   'settings.languageHint': string;
+  'settings.modelPicker': string;
+  'settings.reasoningPicker': string;
+  'settings.modelPickerHint': string;
+  'settings.modelCustom': string;
+  'settings.modelCustomLabel': string;
+  'settings.modelCustomPlaceholder': string;
 
   // Entry view / tabs
   'entry.tabDesigns': string;
@@ -129,6 +135,9 @@ export interface Dict {
   'newproj.create': string;
   'newproj.createFromTemplate': string;
   'newproj.createDisabledTitle': string;
+  'newproj.importClaudeZip': string;
+  'newproj.importClaudeZipTitle': string;
+  'newproj.importingClaudeZip': string;
   'newproj.privacyFooter': string;
   'newproj.designSystem': string;
   'newproj.dsNoneFreeform': string;
@@ -224,6 +233,10 @@ export interface Dict {
   'avatar.metaOffline': string;
   'avatar.metaSelected': string;
   'avatar.noAgentSelected': string;
+  'avatar.modelSection': string;
+  'avatar.modelLabel': string;
+  'avatar.reasoningLabel': string;
+  'avatar.customSuffix': string;
 
   // Project view / chat pane / composer
   'project.backToProjects': string;

@@ -14,6 +14,7 @@ import { loadConfig, saveConfig } from './state/config';
 import {
   createProject,
   deleteProject as deleteProjectApi,
+  importClaudeDesignZip,
   listProjects,
   listTemplates,
   patchProject,
@@ -116,6 +117,7 @@ export function App() {
     const withOnboarding: AppConfig = { ...next, onboardingCompleted: true };
     saveConfig(withOnboarding);
     setConfig(withOnboarding);
+    setSettingsOpen(false);
   }, []);
 
   const handleModeChange = useCallback(
@@ -130,6 +132,18 @@ export function App() {
   const handleAgentChange = useCallback(
     (agentId: string) => {
       const next = { ...config, agentId };
+      saveConfig(next);
+      setConfig(next);
+    },
+    [config],
+  );
+
+  const handleAgentModelChange = useCallback(
+    (agentId: string, choice: { model?: string; reasoning?: string }) => {
+      const prev = config.agentModels?.[agentId] ?? {};
+      const merged = { ...prev, ...choice };
+      const nextAgentModels = { ...(config.agentModels ?? {}), [agentId]: merged };
+      const next = { ...config, agentModels: nextAgentModels };
       saveConfig(next);
       setConfig(next);
     },
@@ -169,6 +183,17 @@ export function App() {
     },
     [],
   );
+
+  const handleImportClaudeDesign = useCallback(async (file: File) => {
+    const result = await importClaudeDesignZip(file);
+    if (!result) return;
+    setProjects((curr) => [result.project, ...curr.filter((p) => p.id !== result.project.id)]);
+    navigate({
+      kind: 'project',
+      projectId: result.project.id,
+      fileName: result.entryFile,
+    });
+  }, []);
 
   const handleOpenProject = useCallback((id: string) => {
     navigate({ kind: 'project', projectId: id, fileName: null });
@@ -271,6 +296,7 @@ export function App() {
           daemonLive={daemonLive}
           onModeChange={handleModeChange}
           onAgentChange={handleAgentChange}
+          onAgentModelChange={handleAgentModelChange}
           onRefreshAgents={refreshAgents}
           onOpenSettings={openSettings}
           onBack={handleBack}
@@ -290,6 +316,7 @@ export function App() {
           agents={agents}
           loading={bootstrapping}
           onCreateProject={handleCreateProject}
+          onImportClaudeDesign={handleImportClaudeDesign}
           onOpenProject={handleOpenProject}
           onDeleteProject={handleDeleteProject}
           onChangeDefaultDesignSystem={handleChangeDefaultDesignSystem}
