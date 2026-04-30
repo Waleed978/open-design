@@ -35,6 +35,7 @@ export interface ChatMessage {
   agentId?: string;
   agentName?: string;
   events?: PersistedAgentEvent[];
+  createdAt?: number;
   startedAt?: number;
   endedAt?: number;
   attachments?: ChatAttachment[];
