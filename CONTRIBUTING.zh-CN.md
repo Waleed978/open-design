@@ -163,7 +163,7 @@ design-systems/your-brand/
 4. **不要营销废话。** 品牌的 tagline 不是设计 token。删掉。
 5. **slug 用 ASCII** —— `linear.app` 写成 `linear-app`，`x.ai` 写成 `x-ai`。已经导入的 69 套都遵循这个约定，跟着写。
 
-我们内置的 69 套产品系统是通过 [`scripts/sync-design-systems.mjs`](scripts/sync-design-systems.mjs) 从 [`VoltAgent/awesome-design-md`][acd2] 导入的。如果你的品牌应该归属在上游，**请先把 PR 发到那里** —— 我们下一次同步会自动收上来。`design-systems/` 文件夹用来放那些**不适合归到上游**的系统、加上我们手写的两套 starter。
+我们内置的 69 套产品系统是通过 [`scripts/sync-design-systems.ts`](scripts/sync-design-systems.ts) 从 [`VoltAgent/awesome-design-md`][acd2] 导入的。如果你的品牌应该归属在上游，**请先把 PR 发到那里** —— 我们下一次同步会自动收上来。`design-systems/` 文件夹用来放那些**不适合归到上游**的系统、加上我们手写的两套 starter。
 
 ---
 

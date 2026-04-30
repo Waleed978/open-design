@@ -17,7 +17,7 @@ import {
   type DesktopScreenshotResult,
   type DesktopStatusSnapshot,
   type WebStatusSnapshot,
-} from "@open-design/contracts/sidecar";
+} from "@open-design/sidecar-proto";
 import { createSidecarLaunchEnv, requestJsonIpc } from "@open-design/sidecar";
 import {
   collectProcessTreePids,

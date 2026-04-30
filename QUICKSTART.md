@@ -65,6 +65,29 @@ pnpm typecheck                 # workspace typecheck
 
 During local development, `tools-dev` starts the daemon first, passes its port into `apps/web`, and `apps/web/next.config.ts` rewrites `/api/*`, `/artifacts/*`, and `/frames/*` to that daemon port so the App Router app can talk to the sibling Express process without CORS setup.
 
+For the daemon-only production mode, the daemon serves the static Next.js export itself at `http://localhost:7456`, so no reverse proxy is involved.
+
+If you place nginx in front of the daemon, keep SSE routes unbuffered and uncompressed. A common failure is the browser console showing `net::ERR_INCOMPLETE_CHUNKED_ENCODING 200 (OK)` after 80-90 seconds because nginx `gzip on` buffers chunked SSE responses even when the daemon sends `X-Accel-Buffering: no`.
+
+```nginx
+location /api/ {
+    proxy_pass http://127.0.0.1:7456;
+
+    proxy_buffering off;
+    gzip off;
+
+    proxy_read_timeout 86400s;
+    proxy_send_timeout 86400s;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
 ## Two execution modes
 
 | Mode | Picker value | How a request flows |
@@ -92,13 +115,13 @@ Swap the skill or the design system in the top bar and the next send uses the ne
 open-design/
 ├── apps/
 │   ├── daemon/                # Node/Express — spawns local agents + serves APIs
-│   │   ├── cli.js             # `od` bin entry (also used by npm scripts)
-│   │   ├── server.js          # /api/agents /api/skills /api/design-systems /api/chat /api/upload /api/artifacts/save
-│   │   ├── agents.js          # PATH scanner for claude/codex/gemini/opencode/cursor-agent/qwen/copilot
-│   │   ├── skills.js          # SKILL.md loader (frontmatter parser)
-│   │   ├── design-systems.js  # DESIGN.md loader
-│   │   └── frontmatter.js     # tiny YAML-subset parser (no deps)
-│   └── web/                   # Next.js 16 App Router + React client
+│   │   ├── cli.ts             # `od` bin entry
+│   │   ├── server.ts          # /api/* + static serving
+│   │   ├── agents.ts          # PATH scanner for claude/codex/gemini/opencode/cursor-agent/qwen/copilot
+│   │   ├── skills.ts          # SKILL.md loader (frontmatter parser)
+│   │   ├── design-systems.ts  # DESIGN.md loader
+│   │   └── sidecar/           # tools-dev daemon sidecar wrapper
+│   ├── web/                   # Next.js 16 App Router + React client
 │       ├── app/               # App Router entrypoints
 │       ├── src/               # shared React + TypeScript client/runtime modules
 │       │   ├── App.tsx        # orchestrates mode / skill / DS pickers + send
@@ -107,7 +130,15 @@ open-design/
 │       │   ├── artifacts/     # streaming <artifact> parser + manifests
 │       │   ├── runtime/       # iframe srcdoc, markdown, export helpers
 │       │   └── state/         # localStorage + daemon-backed project state
-│       └── next.config.ts     # dev rewrites + prod apps/web/out export config
+│       ├── sidecar/           # tools-dev web sidecar wrapper
+│       └── next.config.ts     # tools-dev rewrites + prod apps/web/out export config
+│   └── desktop/               # Electron runtime, launched/inspected by tools-dev
+├── packages/
+│   ├── contracts/             # shared web/daemon app contracts
+│   ├── sidecar-proto/         # Open Design sidecar protocol contract
+│   ├── sidecar/               # generic sidecar runtime primitives
+│   └── platform/              # generic process/platform primitives
+├── tools/dev/                 # `pnpm tools-dev` lifecycle and inspect CLI
 ├── e2e/                       # Playwright UI + external integration/Vitest harness
 ├── skills/                    # SKILL.md — drops in from any Claude Code skill repo
 │   ├── web-prototype/         # generic single-screen prototype (default for prototype mode)
@@ -127,20 +158,20 @@ open-design/
 │   ├── warm-editorial/        # Warm Editorial (starter)
 │   ├── README.md              # catalog overview
 │   └── …69 product systems    # claude · cohere · linear-app · vercel · stripe · airbnb …
-├── scripts/sync-design-systems.mjs   # re-import from upstream getdesign tarball
+├── scripts/sync-design-systems.ts    # re-import from upstream getdesign tarball
 ├── docs/                      # product vision + spec
 ├── .od/                       # runtime data (gitignored, auto-created)
 │   ├── app.sqlite              #   projects / conversations / messages / tabs
 │   ├── artifacts/              #   one-off "Save to disk" renders
 │   └── projects/<id>/          #   per-project working dir + agent cwd
-├── pnpm-workspace.yaml        # apps/* + e2e
-└── package.json               # root orchestration scripts + `od` bin
+├── pnpm-workspace.yaml        # apps/* + packages/* + tools/* + e2e
+└── package.json               # root quality scripts + `od` bin
 ```
 
 ## Troubleshooting
 
 - **"no agents found on PATH"** — install one of: `claude`, `codex`, `gemini`, `opencode`, `cursor-agent`, `qwen`, `copilot`. Or switch to "Anthropic API · BYOK" in the top bar and paste a key in **Settings**.
-- **daemon 500 on /api/chat** — check the daemon terminal for the stderr tail; usually the CLI rejected its args. Different CLIs take different argv shapes; see `apps/daemon/agents.js` `buildArgs` if you need to tweak.
+- **daemon 500 on /api/chat** — check the daemon terminal for the stderr tail; usually the CLI rejected its args. Different CLIs take different argv shapes; see `apps/daemon/agents.ts` `buildArgs` if you need to tweak.
 - **artifact never renders** — the model produced text without wrapping in `<artifact>`. Confirm the system prompt is going through (check daemon log) and consider switching to a more capable model or a stricter skill.
 
 ## Mapping back to the vision
@@ -148,6 +179,6 @@ open-design/
 This Quickstart is the runnable seed of the spec in [`docs/`](docs/). The spec describes where this grows (see [`docs/roadmap.md`](docs/roadmap.md)). Highlights:
 
 - `docs/architecture.md` describes the shipped stack: Next.js 16 App Router in front, local daemon behind it, and `apps/web/next.config.ts` rewrites in dev to keep the browser talking to the same `/api` surface.
-- `docs/skills-protocol.md` describes the full `od:` frontmatter (typed inputs, sliders, capability gating). This MVP reads `name` / `description` / `triggers` / `od.mode` / `od.design_system.requires` only — extend `apps/daemon/skills.js` to add the rest.
-- `docs/agent-adapters.md` foresees richer dispatch (capability detection, streaming tool-calls). Our `apps/daemon/agents.js` is a minimal dispatcher — enough to prove the wiring.
+- `docs/skills-protocol.md` describes the full `od:` frontmatter (typed inputs, sliders, capability gating). This MVP reads `name` / `description` / `triggers` / `od.mode` / `od.design_system.requires` only — extend `apps/daemon/skills.ts` to add the rest.
+- `docs/agent-adapters.md` foresees richer dispatch (capability detection, streaming tool-calls). Our `apps/daemon/agents.ts` is a minimal dispatcher — enough to prove the wiring.
 - `docs/modes.md` lists four modes: prototype / deck / template / design-system. We ship skills for the first two; the picker already filters by `mode`.

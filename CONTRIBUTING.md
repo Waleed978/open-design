@@ -164,7 +164,7 @@ The 9-section schema is fixed — that's what skill bodies grep for. The first H
 4. **No marketing fluff.** The brand's tagline is not a design token. Cut it.
 5. **Slug uses ASCII** — `linear.app` becomes `linear-app`, `x.ai` becomes `x-ai`. The 69 imported systems already follow this convention; mirror it.
 
-The 69 product systems we ship are imported from [`VoltAgent/awesome-design-md`][acd2] via [`scripts/sync-design-systems.mjs`](scripts/sync-design-systems.mjs). If your brand belongs upstream, **send the PR there first** — we'll pick it up automatically on the next sync. The `design-systems/` folder is for systems that don't fit upstream, plus our two hand-authored starters.
+The 69 product systems we ship are imported from [`VoltAgent/awesome-design-md`][acd2] via [`scripts/sync-design-systems.ts`](scripts/sync-design-systems.ts). If your brand belongs upstream, **send the PR there first** — we'll pick it up automatically on the next sync. The `design-systems/` folder is for systems that don't fit upstream, plus our two hand-authored starters.
 
 ---
 

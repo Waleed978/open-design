@@ -14,7 +14,7 @@ import {
   type DesktopScreenshotInput,
   type SidecarStamp,
   type WebStatusSnapshot,
-} from "@open-design/contracts/sidecar";
+} from "@open-design/sidecar-proto";
 import {
   bootstrapSidecarRuntime,
   createJsonIpcServer,

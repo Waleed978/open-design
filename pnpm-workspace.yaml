@@ -1,5 +1,5 @@
 packages:
-  - apps/*
   - packages/*
+  - apps/*
   - tools/*
   - e2e

@@ -14,7 +14,7 @@
   <a href="QUICKSTART.md"><img alt="Quickstart" src="https://img.shields.io/badge/quickstart-3%20commands-green" /></a>
 </p>
 
-<p align="center"><a href="README.md">English</a> · <b>简体中文</b></p>
+<p align="center"><a href="README.md">English</a> · <b>简体中文</b> · <a href="README.ko.md">한국어</a></p>
 
 ---
 
@@ -370,7 +370,7 @@ open-design/
 │   └── deck-framework.html        ← deck 基线（nav / counter / print）
 │
 ├── scripts/
-│   └── sync-design-systems.mjs    ← 从上游 awesome-design-md tarball 重新导入
+│   └── sync-design-systems.ts     ← 从上游 awesome-design-md tarball 重新导入
 │
 ├── docs/
 │   ├── spec.md                    ← 产品定义、场景、差异化
@@ -420,7 +420,7 @@ open-design/
 
 </details>
 
-整个库通过 [`scripts/sync-design-systems.mjs`](scripts/sync-design-systems.mjs) 从 [`VoltAgent/awesome-design-md`][acd2] 导入。重新执行即可刷新。
+整个库通过 [`scripts/sync-design-systems.ts`](scripts/sync-design-systems.ts) 从 [`VoltAgent/awesome-design-md`][acd2] 导入。重新执行即可刷新。
 
 ## 视觉方向
 
@@ -505,7 +505,7 @@ Daemon 启动时从 `PATH` 自动检测，无需配置。
 | [**`op7418/guizang-ppt-skill`**（歸藏）][guizang] | Magazine-web-PPT skill 原样捆绑在 [`skills/guizang-ppt/`](skills/guizang-ppt/) 下，原 LICENSE 保留。Deck 模式默认。P0/P1/P2 checklist 文化也被借给了所有其他 skill。 |
 | [**`multica-ai/multica`**](https://github.com/multica-ai/multica) | Daemon + adapter 架构。PATH 扫描式 agent 检测、本地 daemon 作为唯一特权进程、agent-as-teammate 世界观。我们采纳模型，不 vendor 代码。 |
 | [**`OpenCoworkAI/open-codesign`**][ocod] | 第一个开源的 Claude-Design 替代品，也是我们最接近的同类。已采纳的 UX 模式：流式 artifact 循环、沙盒 iframe 预览（自带 React 18 + Babel）、实时 agent 面板（todos + tool calls + 可中断）、5 种导出格式列表（HTML/PDF/PPTX/ZIP/Markdown）、本地优先的 designs hub、`SKILL.md` 品味注入。路线图上的 UX 模式：评论模式手术刀编辑、AI 自吐 tweaks 面板。**我们刻意不 vendor [`pi-ai`][piai]** —— open-codesign 把它打包成 agent 运行时；我们则委托给用户已经装好的 CLI。 |
-| [`VoltAgent/awesome-claude-design`][acd] / [`awesome-design-md`][acd2] | 9 段式 `DESIGN.md` schema 的来源，69 套产品系统通过 [`scripts/sync-design-systems.mjs`](scripts/sync-design-systems.mjs) 导入。 |
+| [`VoltAgent/awesome-claude-design`][acd] / [`awesome-design-md`][acd2] | 9 段式 `DESIGN.md` schema 的来源，69 套产品系统通过 [`scripts/sync-design-systems.ts`](scripts/sync-design-systems.ts) 导入。 |
 | [`farion1231/cc-switch`](https://github.com/farion1231/cc-switch) | 跨多个 agent CLI 的 symlink 式 skill 分发灵感来源。 |
 | [Claude Code skills][skill] | `SKILL.md` 规范原样采纳 —— 任何 Claude Code skill 丢进 `skills/` 都能被 daemon 识别。 |
 

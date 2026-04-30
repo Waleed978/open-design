@@ -19,14 +19,14 @@ export default defineConfig({
         ['html', { open: 'never', outputFolder: './reports/playwright-html-report' }],
         ['json', { outputFile: './reports/results.json' }],
         ['junit', { outputFile: './reports/junit.xml' }],
-        ['./reporters/markdown-reporter.cjs', { outputFile: './reports/latest.md' }],
+        ['./reporters/markdown-reporter.ts', { outputFile: './reports/latest.md' }],
       ]
     : [
         ['list'],
         ['html', { open: 'never', outputFolder: './reports/playwright-html-report' }],
         ['json', { outputFile: './reports/results.json' }],
         ['junit', { outputFile: './reports/junit.xml' }],
-        ['./reporters/markdown-reporter.cjs', { outputFile: './reports/latest.md' }],
+        ['./reporters/markdown-reporter.ts', { outputFile: './reports/latest.md' }],
       ],
   use: {
     baseURL,

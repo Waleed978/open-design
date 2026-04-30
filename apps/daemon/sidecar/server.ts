@@ -6,7 +6,7 @@ import {
   normalizeDaemonSidecarMessage,
   type DaemonStatusSnapshot,
   type SidecarStamp,
-} from "@open-design/contracts/sidecar";
+} from "@open-design/sidecar-proto";
 import {
   createJsonIpcServer,
   type JsonIpcServerHandle,
@@ -62,16 +62,19 @@ function attachParentMonitor(stop: () => Promise<void>): void {
 }
 
 export async function startDaemonSidecar(runtime: SidecarRuntimeContext<SidecarStamp>): Promise<DaemonSidecarHandle> {
-  const started = await startServer({ port: parsePort(process.env[DAEMON_PORT_ENV]), returnServer: true });
+  const started = await startServer({ port: parsePort(process.env[DAEMON_PORT_ENV]), returnServer: true }) as
+    | string
+    | { server: Server; url: string };
   if (typeof started === "string") {
     throw new Error("daemon startServer did not return a server handle");
   }
+  const serverHandle = started;
 
   const state: DaemonStatusSnapshot = {
     pid: process.pid,
     state: "running",
     updatedAt: new Date().toISOString(),
-    url: started.url,
+    url: serverHandle.url,
   };
   let ipcServer: JsonIpcServerHandle | null = null;
   let stopped = false;
@@ -86,7 +89,7 @@ export async function startDaemonSidecar(runtime: SidecarRuntimeContext<SidecarS
     state.state = "stopped";
     state.updatedAt = new Date().toISOString();
     await ipcServer?.close().catch(() => undefined);
-    await closeHttpServer(started.server).catch(() => undefined);
+    await closeHttpServer(serverHandle.server).catch(() => undefined);
     resolveStopped();
   }
 
