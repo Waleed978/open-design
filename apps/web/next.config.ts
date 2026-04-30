@@ -19,11 +19,12 @@ const DAEMON_ORIGIN = `http://127.0.0.1:${DAEMON_PORT}`;
 const isProd = process.env.NODE_ENV !== 'development';
 
 const WEB_ROOT = dirname(fileURLToPath(import.meta.url));
+const toPosixPath = (value: string) => value.replaceAll('\\', '/');
 
 function resolveDevDistDir() {
   const configured = process.env.OD_WEB_DIST_DIR;
   if (!configured) return '.next';
-  return isAbsolute(configured) ? relative(WEB_ROOT, configured) || '.' : configured;
+  return toPosixPath(isAbsolute(configured) ? relative(WEB_ROOT, configured) || '.' : configured);
 }
 
 const DEV_DIST_DIR = resolveDevDistDir();
@@ -31,7 +32,7 @@ const DEV_DIST_DIR = resolveDevDistDir();
 function resolveDevTsconfigPath() {
   const configured = process.env.OD_WEB_TSCONFIG_PATH;
   if (!configured) return undefined;
-  return isAbsolute(configured) ? relative(WEB_ROOT, configured) || 'tsconfig.json' : configured;
+  return toPosixPath(isAbsolute(configured) ? relative(WEB_ROOT, configured) || 'tsconfig.json' : configured);
 }
 
 const DEV_TSCONFIG_PATH = resolveDevTsconfigPath();
