@@ -171,6 +171,18 @@ export interface Dict {
   'designs.deleteTitle': string;
   'designs.deleteConfirm': string;
   'designs.cardFreeform': string;
+  'designs.status.notStarted': string;
+  'designs.status.queued': string;
+  'designs.status.running': string;
+  'designs.status.awaitingInput': string;
+  'designs.status.succeeded': string;
+  'designs.status.failed': string;
+  'designs.status.canceled': string;
+  'designs.viewToggleAria': string;
+  'designs.viewGrid': string;
+  'designs.viewKanban': string;
+  'designs.kanbanEmptyColumn': string;
+  'designs.deleteAria': string;
 
   // Examples tab
   'examples.typeLabel': string;
@@ -384,6 +396,10 @@ export interface Dict {
   'fileViewer.open': string;
   'fileViewer.imageMeta': string;
   'fileViewer.sketchMeta': string;
+  'fileViewer.markdownStreamingMeta': string;
+  'fileViewer.markdownErrorMeta': string;
+  'fileViewer.markdownStreamingStatus': string;
+  'fileViewer.markdownErrorStatus': string;
   'fileViewer.reload': string;
   'fileViewer.reloadDisk': string;
   'fileViewer.copy': string;
@@ -423,6 +439,31 @@ export interface Dict {
   'fileViewer.templateNamePrompt': string;
   'fileViewer.templateNameDefault': string;
   'fileViewer.templateDescPrompt': string;
+  'fileViewer.deployToVercel': string;
+  'fileViewer.redeployToVercel': string;
+  'fileViewer.deployingToVercel': string;
+  'fileViewer.preparingPublicLink': string;
+  'fileViewer.copyDeployLink': string;
+  'fileViewer.deployModalTitle': string;
+  'fileViewer.deployModalSubtitle': string;
+  'fileViewer.vercelToken': string;
+  'fileViewer.vercelTokenGetLink': string;
+  'fileViewer.vercelTokenPlaceholder': string;
+  'fileViewer.vercelTokenReuseHint': string;
+  'fileViewer.vercelTokenRequired': string;
+  'fileViewer.vercelTeamId': string;
+  'fileViewer.vercelTeamSlug': string;
+  'fileViewer.optional': string;
+  'fileViewer.vercelPreviewOnly': string;
+  'fileViewer.savingConfig': string;
+  'fileViewer.deployConfigSaveFailed': string;
+  'fileViewer.deployFailed': string;
+  'fileViewer.deployResultLabel': string;
+  'fileViewer.deployLinkPreparingLabel': string;
+  'fileViewer.deployLinkDelayed': string;
+  'fileViewer.deployLinkProtectedLabel': string;
+  'fileViewer.deployLinkProtected': string;
+  'fileViewer.retryLink': string;
 
   // Question form (assistant question UX)
   'questionForm.submit': string;
